@@ -1,28 +1,25 @@
-- name: Run a sample web application in nginx
-  hosts: localhost
+tasks:
+  - name: Install nginx
+    ansible.builtin.package:
+      name: nginx
+      state: present
+    become: true
+  - name: Deploy nginx config
+    ansible.builtin.template:
+      src: nginx.conf.j2
+      dest: /etc/nginx/nginx.conf
+    notify: Restart NGINX
+    become: true
 
-  tasks:
-    - name: Install nginx
-      ansible.builtin.package:
-        name: nginx
-        state: present
-      become: true
-    - name: Deploy nginx config
-      ansible.builtin.template:
-        src: nginx.conf.j2
-        dest: /etc/nginx/nginx.conf
-      notify: Restart NGINX
-      become: true
+  - name: Copy index file
+    ansible.builtin.copy:
+      src: index.html
+      dest: /var/www/html/index.html
+    become: true
 
-    - name: Copy index file
-      ansible.builtin.copy:
-        src: index.html
-        dest: /var/www/html/index.html
-      become: true
-
-    - name: Ensure nginx is running
-      ansible.builtin.service:
-        name: nginx
-        state: started
-        enabled: true
-      become: true
+  - name: Ensure nginx is running
+    ansible.builtin.service:
+      name: nginx
+      state: started
+      enabled: true
+    become: true
