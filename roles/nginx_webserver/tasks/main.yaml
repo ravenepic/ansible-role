@@ -10,7 +10,7 @@
     mode: "0655"
   become: yes
 
-- name: Generate self-signed SSL certificate if not exists
+- name: create a self-signed certificate if not exists
   ansible.builtin.command: >
     openssl req -x509 -nodes -days 365 -newkey rsa:2048   
     -keyout {{ ssl_key_path }}
