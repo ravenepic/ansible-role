@@ -1,5 +1,4 @@
 - name: Deploy nginx
   hosts: localhost
-
   roles:
     - nginx_webserver
