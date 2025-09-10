@@ -3,6 +3,23 @@
     name: nginx
     state: present
   become: true
+- name: Create a certifcate directory
+  file:
+    path: /etc/nginx/certs
+    state: directory
+    mode: "0655"
+  become: yes
+
+- name: Generate self-signed SSL certificate if not exists
+  ansible.builtin.command: >
+    openssl req -x509 -nodes -days 365 -newkey rsa:2048   
+    -keyout {{ ssl_key_path }}
+    -out {{ ssl_cert_path }}   
+    -subj "/CN=localhost"
+  args:
+    creates: "{{ ssl_cert_path }}"
+  become: yes
+
 - name: Deploy nginx config
   ansible.builtin.template:
     src: nginx.conf.j2
